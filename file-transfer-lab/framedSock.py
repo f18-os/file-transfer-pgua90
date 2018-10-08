@@ -9,13 +9,14 @@ def framedSend(sock, payload, debug=0):
      
 rbuf = b""                      # static receive buffer
 
-def framedReceive(sock, debug = 0):
+def framedReceive(sock, debug=0):
     global rbuf
     state = "getLength"
     msgLength = -1
     while True:
          if (state == "getLength"):
-             match = re.match(b'([^:]+):(.*)', re.DOTALL|re.MULTILINE) # look for colon
+
+             match = re.match(b'([^:]+):(.*)', rbuf, re.DOTALL | re.MULTILINE) # look for colon
              if match:
                   lengthStr, rbuf = match.groups()
                   try: 

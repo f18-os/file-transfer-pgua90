@@ -1,8 +1,9 @@
 #! /usr/bin/env python3
 
-import sys, os, re, socket, params
-#os.chdir("..")
-os.chdir("Server")
+sys.path.append("../lib")       # for params
+
+import sys, os, socket, params
+
 
 switchesVarDefaults = (
     (('-l', '--listenPort') ,'listenPort', 50001),
@@ -25,10 +26,7 @@ lsock.listen(5)
 print("listening on:", bindAddr)
 
 while True:
-
-    sock, addr = lsock.accept() #once it accepts it needs to fork, you want to do everything inside the child, and exit child
-    #make sure the server let the server know the child is done with some sort of feature.
-    print("connection rec'd from", addr)
+    sock, addr = lsock.accept()
 
     from framedSock import framedSend, framedReceive
 
@@ -40,9 +38,5 @@ while True:
             if not payload:
                 if debug: print("child exiting")
                 sys.exit(0)
-            
-            print("recieved...")
-            framedSend(s, b':' + payload, debug)
-            sys.exit(0)
-
-sock.close()
+            payload += b"!"             # make emphatic!
+            framedSend(sock, payload, debug)
